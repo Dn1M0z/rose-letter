@@ -40,7 +40,7 @@ function buildRose(){
  petal('#f67a79',p=>{p.moveTo(478,241);p.bezierCurveTo(487,226,508,225,520,237);p.bezierCurveTo(505,231,490,234,478,241)});
  petal('#568c73',p=>{p.moveTo(500,363);p.bezierCurveTo(480,363,468,351,461,337);p.bezierCurveTo(478,346,489,348,500,348);p.bezierCurveTo(513,348,525,343,539,336);p.bezierCurveTo(531,352,518,363,500,363)});
  const pixels=c.getImageData(0,0,W,H).data;roseDots=[];let i=0;
- for(let y=146;y<595;y+=9)for(let x=346;x<650;x+=8){const k=(Math.floor(y)*W+Math.floor(x))*4;if(pixels[k+3]<100)continue;const red=pixels[k],green=pixels[k+1],blue=pixels[k+2];roseDots.push({x,y,color:'rgb('+red+','+green+','+blue+')',char:glyphs[(x*7+y*13)%glyphs.length],order:i++})}
+ for(let y=146;y<595;y+=9)for(let x=346;x<650;x+=8){const k=(Math.floor(y)*W+Math.floor(x))*4;if(pixels[k+3]<100)continue;const red=pixels[k],green=pixels[k+1],blue=pixels[k+2];roseDots.push({x,y,color:'rgb('+red+','+green+','+blue+')',char:WORDS[(Math.floor((x-346)/8)+Math.floor((y-146)/9)*3)%WORDS.length],order:i++})}
 }buildRose();
 function draw(now){const t=opened?(now-start)/1000:0;ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='#05070c';ctx.fillRect(0,0,canvas.width,canvas.height);const portrait=canvas.height>canvas.width;const s=Math.min(canvas.width/(portrait?620:W),canvas.height/H);ctx.setTransform(s,0,0,s,(canvas.width-W*s)/2,(canvas.height-H*s)/2);
  for(const [x,y,r,phase] of stars)if(Math.sin(t*1.8+phase)>-.2){ctx.beginPath();ctx.arc(x,y,r/2,0,Math.PI*2);ctx.fillStyle='#8792ae';ctx.fill()}
