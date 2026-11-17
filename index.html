@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#05070c"><title>A special letter for Artmis</title>
-<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#05070c;touch-action:manipulation}canvas{display:block;width:100vw;height:100dvh}</style></head>
-<body><canvas id="scene" aria-label="An animated letter that opens to reveal a glowing text-art red rose for Artmis. Tap to replay."></canvas>
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#05070c;touch-action:manipulation}canvas{display:block;width:100vw;height:100dvh}#openLetter{position:fixed;left:50%;bottom:max(8%, env(safe-area-inset-bottom));transform:translateX(-50%);width:max-content;max-width:90%;padding:14px 20px;border:1px solid #e8a0a8;border-radius:999px;background:#27141f;color:#ffe2e8;font:600 16px system-ui,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none;cursor:pointer}#openLetter:focus-visible{outline:3px solid white;outline-offset:4px}#openLetter[hidden]{display:none}</style></head>
+<body><canvas id="scene" aria-label="An animated letter that opens to reveal a glowing text-art red rose for Artmis."></canvas><button id="openLetter" type="button" aria-label="Press and hold to open the letter">Press and hold to open 💌</button>
 <script>
 const NAME='Artmis',MESSAGE='I love you more than words can say',WORDS='I LOVE YOU  ',W=1000,H=700;
-const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');let start=performance.now(),seed=7;
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');let start=0,seed=7,opened=false,holdTimer=null;const openButton=document.getElementById('openLetter');
 function rand(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}
 const stars=Array.from({length:105},()=>[rand()*W,rand()*H,.5+rand()*1.5,rand()*6]);
 const glyphs=['@','#','8','&','%','+','*','=',':','S'];let roseDots=[];
@@ -42,16 +42,22 @@ function buildRose(){
  const pixels=c.getImageData(0,0,W,H).data;roseDots=[];let i=0;
  for(let y=146;y<595;y+=9)for(let x=346;x<650;x+=8){const k=(Math.floor(y)*W+Math.floor(x))*4;if(pixels[k+3]<100)continue;const red=pixels[k],green=pixels[k+1],blue=pixels[k+2];roseDots.push({x,y,color:'rgb('+red+','+green+','+blue+')',char:glyphs[(x*7+y*13)%glyphs.length],order:i++})}
 }buildRose();
-function draw(now){const t=(now-start)/1000;ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='#05070c';ctx.fillRect(0,0,canvas.width,canvas.height);const s=Math.min(canvas.width/W,canvas.height/H);ctx.setTransform(s,0,0,s,(canvas.width-W*s)/2,(canvas.height-H*s)/2);
+function draw(now){const t=opened?(now-start)/1000:0;ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='#05070c';ctx.fillRect(0,0,canvas.width,canvas.height);const portrait=canvas.height>canvas.width;const s=Math.min(canvas.width/(portrait?620:W),canvas.height/H);ctx.setTransform(s,0,0,s,(canvas.width-W*s)/2,(canvas.height-H*s)/2);
  for(const [x,y,r,phase] of stars)if(Math.sin(t*1.8+phase)>-.2){ctx.beginPath();ctx.arc(x,y,r/2,0,Math.PI*2);ctx.fillStyle='#8792ae';ctx.fill()}
- if(t<4.3){const p=Math.min(Math.max((t-1)/1.2,0),1),rise=Math.min(Math.max((t-2.1)/1.5,0),1);polygon([245,285,500,405-210*p,755,285],'#9a5361','#e8a0a8');if(rise){const y=300-145*rise;polygon([300,y,700,y,700,y+240,300,y+240],'#f9e8da','#eab9ae');text(500,y+55,'A LETTER FOR YOU','#aa5964',15);text(500,y+110,'♥','#c54460',32)}polygon([245,285,755,285,755,530,245,530],'#c77f82','#f2b4ad');polygon([245,285,500,442,755,285,755,530,245,530],'#d99592','#f2b4ad');line([245,530,500,365,755,530],'#f2b4ad');text(500,475,'♥','#b43f57',30);text(500,600,'A little something for you...','#e9bfc5',15)}
+ if(t<4.3){const p=Math.min(Math.max((t-1)/1.2,0),1),rise=Math.min(Math.max((t-2.1)/1.5,0),1);polygon([245,285,500,405-210*p,755,285],'#9a5361','#e8a0a8');if(rise){const y=300-145*rise;polygon([300,y,700,y,700,y+240,300,y+240],'#f9e8da','#eab9ae');text(500,y+55,'A LETTER FOR YOU','#aa5964',24);text(500,y+110,'♥','#c54460',32)}polygon([245,285,755,285,755,530,245,530],'#c77f82','#f2b4ad');polygon([245,285,500,442,755,285,755,530,245,530],'#d99592','#f2b4ad');line([245,530,500,365,755,530],'#f2b4ad');text(500,475,'♥','#b43f57',30);text(500,600,'A little something for you...','#e9bfc5',23)}
  else{
  const progress=Math.min((t-4.3)/2.7,1);ctx.save();ctx.shadowBlur=6;ctx.shadowColor='#d4315b';
  for(const d of roseDots){if((d.y-145)/450>progress)continue;const shimmer=.8+.2*Math.sin(t*2+d.x*.045+d.y*.03);ctx.globalAlpha=shimmer;text(d.x,d.y,d.char,d.color,10)}ctx.restore();ctx.globalAlpha=1;
  // Thin, horizontal blue digital scan lines and tiny white particles, matching the reference aesthetic.
  ctx.save();ctx.globalAlpha=.18;for(let i=0;i<17;i++){const y=172+i*21+Math.sin(t+i)*4,x=200+Math.sin(i*17+t*.3)*90;line([x,y,800-x*.1,y],'#4a83c8',1)}ctx.restore();
- if(progress>=1){text(500,626,'For '+NAME+' ♥','#ffc2cf',20);text(500,656,MESSAGE,'#e4c7d0',12)}
+ if(progress>=1){text(500,618,'For '+NAME+' ♥','#ffc2cf',28);text(500,650,'I love you more than','#f3dce2',23);text(500,681,'words can say','#f3dce2',23)}
  }
  requestAnimationFrame(draw)
-}requestAnimationFrame(draw);canvas.addEventListener('click',()=>{start=performance.now()});
+}requestAnimationFrame(draw);
+function openLetter(){if(opened)return;opened=true;start=performance.now();openButton.hidden=true}
+function cancelHold(){clearTimeout(holdTimer);holdTimer=null;openButton.textContent='Press and hold to open 💌'}
+openButton.addEventListener('pointerdown',e=>{if(e.button!==0)return;e.preventDefault();openButton.setPointerCapture(e.pointerId);openButton.textContent='Keep holding…';holdTimer=setTimeout(openLetter,700)});
+openButton.addEventListener('pointerup',cancelHold);openButton.addEventListener('pointercancel',cancelHold);openButton.addEventListener('lostpointercapture',cancelHold);
+openButton.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.repeat){e.preventDefault();openButton.textContent='Keep holding…';holdTimer=setTimeout(openLetter,700)}});
+openButton.addEventListener('keyup',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();cancelHold()}});openButton.addEventListener('blur',cancelHold);
 </script></body></html>
