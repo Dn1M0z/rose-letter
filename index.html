@@ -7,7 +7,7 @@ const NAME='Artmis',MESSAGE='I love you more than words can say',WORDS='I LOVE Y
 const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');let start=performance.now(),seed=7;
 function rand(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}
 const stars=Array.from({length:105},()=>[rand()*W,rand()*H,.5+rand()*1.5,rand()*6]);
-const glyphs=['@','#','8','&','%','+','*','=',':'];let roseDots=[];
+const glyphs=['@','#','8','&','%','+','*','=',':','S'];let roseDots=[];
 function resize(){const dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(innerWidth*dpr);canvas.height=Math.round(innerHeight*dpr);canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px'}addEventListener('resize',resize);resize();
 function polygon(a,fill,stroke,width=2){ctx.beginPath();ctx.moveTo(a[0],a[1]);for(let i=2;i<a.length;i+=2)ctx.lineTo(a[i],a[i+1]);ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke()}}
 function line(a,color,width=2){ctx.beginPath();ctx.moveTo(a[0],a[1]);for(let i=2;i<a.length;i+=2)ctx.lineTo(a[i],a[i+1]);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke()}
@@ -16,22 +16,29 @@ function text(x,y,value,color,size=10){ctx.fillStyle=color;ctx.font='bold '+size
 function buildRose(){
  const m=document.createElement('canvas');m.width=W;m.height=H;const c=m.getContext('2d');
  function petal(fill,draw){c.beginPath();draw(c);c.closePath();c.fillStyle=fill;c.fill()}
- // Stem and leaves, drawn behind the flower.
- c.strokeStyle='#3baf93';c.lineWidth=14;c.lineCap='round';c.beginPath();c.moveTo(499,327);c.bezierCurveTo(488,399,516,480,500,584);c.stroke();
- petal('#2c947e',p=>{p.moveTo(499,470);p.bezierCurveTo(436,400,390,420,353,393);p.bezierCurveTo(378,482,439,496,499,470)});
- petal('#52c3a7',p=>{p.moveTo(500,470);p.bezierCurveTo(446,437,408,440,370,410);p.bezierCurveTo(405,468,449,483,500,470)});
- petal('#237966',p=>{p.moveTo(504,515);p.bezierCurveTo(565,442,605,454,644,435);p.bezierCurveTo(617,526,560,540,504,515)});
- petal('#48b99a',p=>{p.moveTo(504,515);p.bezierCurveTo(554,479,592,481,628,449);p.bezierCurveTo(596,509,557,519,504,515)});
- // Distinct overlapping petals form a realistic rose bloom, not a simple oval.
- petal('#8f183b',p=>{p.moveTo(496,359);p.bezierCurveTo(423,349,367,313,361,245);p.bezierCurveTo(355,181,417,171,450,208);p.bezierCurveTo(460,166,504,146,539,195);p.bezierCurveTo(590,153,648,195,632,251);p.bezierCurveTo(625,312,573,355,496,359)});
- petal('#d42c52',p=>{p.moveTo(487,337);p.bezierCurveTo(426,327,386,297,388,238);p.bezierCurveTo(388,201,421,197,452,229);p.bezierCurveTo(441,275,466,309,487,337)});
- petal('#ee5270',p=>{p.moveTo(468,316);p.bezierCurveTo(408,289,404,238,423,210);p.bezierCurveTo(436,193,452,202,471,223);p.bezierCurveTo(444,246,446,283,468,316)});
- petal('#a7193f',p=>{p.moveTo(504,348);p.bezierCurveTo(552,326,608,296,606,236);p.bezierCurveTo(606,201,574,197,548,226);p.bezierCurveTo(559,275,530,314,504,348)});
- petal('#f04a68',p=>{p.moveTo(528,315);p.bezierCurveTo(589,291,591,241,576,210);p.bezierCurveTo(564,196,545,203,530,225);p.bezierCurveTo(557,254,548,285,528,315)});
- petal('#b92248',p=>{p.moveTo(499,333);p.bezierCurveTo(446,299,441,263,466,229);p.bezierCurveTo(483,209,519,211,539,232);p.bezierCurveTo(561,260,541,303,499,333)});
- petal('#fb6b83',p=>{p.moveTo(495,304);p.bezierCurveTo(457,277,461,247,478,230);p.bezierCurveTo(494,217,524,221,534,239);p.bezierCurveTo(548,267,523,292,495,304)});
- petal('#86142f',p=>{p.moveTo(503,286);p.bezierCurveTo(475,271,477,250,490,241);p.bezierCurveTo(510,230,531,249,520,263);p.bezierCurveTo(513,272,499,269,496,260)});
- petal('#ff9ca9',p=>{p.moveTo(484,242);p.bezierCurveTo(494,225,519,230,527,243);p.bezierCurveTo(512,236,496,238,484,242)});
+ // Curved stem and pointed leaves sit behind the bloom.
+ c.strokeStyle='#367e72';c.lineWidth=7;c.lineCap='round';c.beginPath();c.moveTo(502,350);c.bezierCurveTo(493,415,513,496,498,590);c.stroke();
+ c.strokeStyle='#78b8a4';c.lineWidth=2;c.beginPath();c.moveTo(502,365);c.bezierCurveTo(497,440,506,500,499,580);c.stroke();
+ petal('#225f55',p=>{p.moveTo(499,474);p.bezierCurveTo(464,433,422,427,391,415);p.bezierCurveTo(407,460,446,488,499,474)});
+ petal('#498d7b',p=>{p.moveTo(492,470);p.bezierCurveTo(456,450,425,445,398,420);p.bezierCurveTo(424,460,458,476,492,470)});
+ petal('#255e53',p=>{p.moveTo(504,516);p.bezierCurveTo(541,468,576,471,615,450);p.bezierCurveTo(600,498,564,530,504,516)});
+ petal('#579c85',p=>{p.moveTo(512,510);p.bezierCurveTo(547,489,578,482,607,456);p.bezierCurveTo(583,496,550,512,512,510)});
+ petal('#307d69',p=>{p.moveTo(498,559);p.bezierCurveTo(467,522,440,530,416,515);p.bezierCurveTo(429,548,459,568,498,559)});
+ // The flower is a tall, loosely layered bloom with a dark heart and luminous petal rims.
+ petal('#741329',p=>{p.moveTo(501,364);p.bezierCurveTo(447,351,413,322,406,270);p.bezierCurveTo(396,231,407,191,432,188);p.bezierCurveTo(447,170,465,174,476,184);p.bezierCurveTo(493,166,519,171,531,183);p.bezierCurveTo(551,171,572,184,576,205);p.bezierCurveTo(597,207,602,239,591,274);p.bezierCurveTo(582,320,548,351,501,364)});
+ petal('#b51d38',p=>{p.moveTo(493,346);p.bezierCurveTo(445,335,415,307,414,262);p.bezierCurveTo(412,237,408,217,417,204);p.bezierCurveTo(421,230,439,239,453,244);p.bezierCurveTo(442,277,459,316,493,346)});
+ petal('#e13b4a',p=>{p.moveTo(470,320);p.bezierCurveTo(436,306,420,277,424,244);p.bezierCurveTo(428,255,438,260,449,263);p.bezierCurveTo(445,287,456,309,470,320)});
+ petal('#9c1932',p=>{p.moveTo(507,350);p.bezierCurveTo(551,334,581,301,585,260);p.bezierCurveTo(589,237,587,215,577,207);p.bezierCurveTo(574,229,557,240,544,244);p.bezierCurveTo(550,280,534,319,507,350)});
+ petal('#e24750',p=>{p.moveTo(528,320);p.bezierCurveTo(562,303,577,276,576,243);p.bezierCurveTo(569,254,560,259,549,263);p.bezierCurveTo(552,288,542,307,528,320)});
+ petal('#dc3044',p=>{p.moveTo(447,241);p.bezierCurveTo(427,230,422,209,431,192);p.bezierCurveTo(443,181,459,188,470,200);p.bezierCurveTo(461,212,453,225,447,241)});
+ petal('#f05a60',p=>{p.moveTo(431,197);p.bezierCurveTo(443,183,459,190,469,200);p.bezierCurveTo(452,195,442,198,431,205)});
+ petal('#be203a',p=>{p.moveTo(553,244);p.bezierCurveTo(568,233,580,215,571,195);p.bezierCurveTo(560,181,542,188,530,200);p.bezierCurveTo(543,214,548,226,553,244)});
+ petal('#ed5058',p=>{p.moveTo(531,199);p.bezierCurveTo(544,187,561,187,570,198);p.bezierCurveTo(557,194,544,196,531,204)});
+ petal('#a81832',p=>{p.moveTo(500,331);p.bezierCurveTo(466,313,448,287,451,252);p.bezierCurveTo(453,226,470,208,495,207);p.bezierCurveTo(521,204,542,222,546,249);p.bezierCurveTo(550,283,533,314,500,331)});
+ petal('#e83e4d',p=>{p.moveTo(498,309);p.bezierCurveTo(470,289,462,269,468,246);p.bezierCurveTo(474,227,489,220,505,222);p.bezierCurveTo(528,224,537,242,531,263);p.bezierCurveTo(527,281,514,298,498,309)});
+ petal('#8f142c',p=>{p.moveTo(497,277);p.bezierCurveTo(477,269,474,251,484,240);p.bezierCurveTo(494,230,514,233,521,245);p.bezierCurveTo(529,261,513,272,500,265);p.bezierCurveTo(492,262,492,254,499,250)});
+ petal('#f67a79',p=>{p.moveTo(478,241);p.bezierCurveTo(487,226,508,225,520,237);p.bezierCurveTo(505,231,490,234,478,241)});
+ petal('#568c73',p=>{p.moveTo(500,363);p.bezierCurveTo(480,363,468,351,461,337);p.bezierCurveTo(478,346,489,348,500,348);p.bezierCurveTo(513,348,525,343,539,336);p.bezierCurveTo(531,352,518,363,500,363)});
  const pixels=c.getImageData(0,0,W,H).data;roseDots=[];let i=0;
  for(let y=146;y<595;y+=9)for(let x=346;x<650;x+=8){const k=(Math.floor(y)*W+Math.floor(x))*4;if(pixels[k+3]<100)continue;const red=pixels[k],green=pixels[k+1],blue=pixels[k+2];roseDots.push({x,y,color:'rgb('+red+','+green+','+blue+')',char:glyphs[(x*7+y*13)%glyphs.length],order:i++})}
 }buildRose();
